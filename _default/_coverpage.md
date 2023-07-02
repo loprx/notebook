@@ -1,6 +1,6 @@
 <img src="/assets/image/favicon-180.webp" width="100px"/>
 
-# LOPR <small></small>
+# LOPRX <small></small>
 
 > 奋斗的年纪，改变不了过去，那就改变现在
 
