@@ -1,4 +1,4 @@
-<img src="/assets/image/favicon-180.webp" width="100px"/>
+<img src="assets/image/favicon-180.webp" width="100px"/>
 
 # LOPRX <small></small>
 
