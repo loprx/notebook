@@ -1,6 +1,8 @@
 * 简介
-    * [介绍](/note/resume.md)
+  * [介绍](/note/resume.md)
 * Java
+  * 多线程
+    * [设计模式](/note/Java/thread/设计模式.md)
 * 数据库
 * Linux
 * 前端
