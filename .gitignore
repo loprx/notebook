@@ -1,1 +1,4 @@
 /.history
+/node_modules
+
+/docs/.vitepress/cache

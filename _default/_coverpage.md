@@ -1,11 +1,11 @@
 <img src="assets/image/favicon-180.webp" width="100px"/>
 
-# LOPRX <small></small>
+# LOPRX `<small></small>`
 
-> 奋斗的年纪，改变不了过去，那就改变现在
+> 挖掘机驾驶技巧
 
-- 即使雾霾再严重，也要坚持按照自己的节奏呼吸
-
+* 如何正确掌握挖掘机操作杆的配合技巧？
+* 挖掘机在斜坡或复杂地形上如何保持稳定？
+* 怎样才能精准控制挖掘机的挖掘深度与位置？
 
 [Github](https://github.com/loprx)
-[敬请期待。。。](/)
