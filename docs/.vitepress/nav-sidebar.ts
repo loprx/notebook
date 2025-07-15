@@ -152,20 +152,36 @@ function getSideBarItemTreeData(
         text: title,
         collapsed: false,
       };
+
+      // 设置 items
       if (level !== maxLevel) {
-        dirData.items = getSideBarItemTreeData(
+        const subItems = getSideBarItemTreeData(
           fullPath,
           level + 1,
           maxLevel,
           ignoreFileName,
           ignoreDirNames
         );
+        if (subItems.length > 0) {
+          dirData.items = subItems;
+          dirData.collapsible = true;
+        }
       }
-      if (dirData.items) {
-        dirData.collapsible = true;
+
+      // ✅ 设置 link 指向该目录下的 index.md（如果存在）
+      const indexMdPath = join(fullPath, "index.md");
+      if (existsSync(indexMdPath)) {
+        dirData.link = getDocsDirNameAfterStr(indexMdPath)
+          .replace(".md", "")
+          .replace(/\\/g, "/");
       }
+
       result.push(dirData);
-    } else if (isMarkdownFile(name) && ignoreFileName !== name) {
+    } else if (
+      isMarkdownFile(name) &&
+      ignoreFileName !== name &&
+      name !== "index.md"
+    ) {
       result.push({
         text: title,
         link: getDocsDirNameAfterStr(fullPath)
