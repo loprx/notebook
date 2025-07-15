@@ -456,20 +456,20 @@ kubectl label node master gpu-type=RTX3070  gpu-memory=8GB
 
 #### 安装
 
-1. `<font style="background-color:rgba(255, 255, 255, 0);">`GPU 节点必须运行相同的操作系统，`</font>`
+1. GPU 节点必须运行相同的操作系统，
 
-+ `<font style="background-color:rgba(255, 255, 255, 0);">`如果提前手动在节点上安装驱动的话，该节点可以使用不同的操作系统`</font>`
-+ `<font style="background-color:rgba(255, 255, 255, 0);">`CPU 节点操作系统没要求，因为 gpu-operator 只会在 GPU 节点上运行`</font>`
++ 如果提前手动在节点上安装驱动的话，该节点可以使用不同的操作系统
++ CPU 节点操作系统没要求，因为 gpu-operator 只会在 GPU 节点上运行
 
-2. `<font style="background-color:rgba(255, 255, 255, 0);">`GPU 节点必须配置相同容器引擎，例如都是 containerd 或者都是 docker`</font>`
-3. `<font style="background-color:rgba(255, 255, 255, 0);">`如果使用了 Pod Security Admission (PSA) ，需要为 gpu-operator 标记特权模式`</font>`
+2. GPU 节点必须配置相同容器引擎，例如都是 containerd 或者都是 docker
+3. 如果使用了 Pod Security Admission (PSA) ，需要为 gpu-operator 标记特权模式
 
 ```shell
 kubectl create ns gpu-operator
 kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
 ```
 
-`<font style="background-color:rgba(255, 255, 255, 0);">`4.集群中不要安装 NFD，如果已经安装了需要再安装 gpu-operator 时禁用 NFD 部署。`</font>`
+``4.集群中不要安装 NFD，如果已经安装了需要再安装 gpu-operator 时禁用 NFD 部署。
 
 ```shell
 kubectl get nodes -o json | jq '.items[].metadata.labels | keys | any(startswith("feature.node.kubernetes.io"))'
@@ -642,7 +642,7 @@ spec:
              nvidia.com/gpu: 1
 ```
 
-### `<font style="background-color:rgba(255, 255, 255, 0);">`HAMi`</font>`
+### HAMi
 
 [官方文档](https://github.com/Project-HAMi/HAMi/blob/master/README_cn.md)
 
@@ -659,9 +659,9 @@ helm install hami hami-charts/hami --set scheduler.kubeScheduler.imageTag=v1.23.
 
 ### GPU分配问题
 
-1. [`<font style="background-color:rgba(255, 255, 255, 0);">`如果您在使用设备插件时不请求 GPU，则插件会在容器内公开机器上的所有 GPU。`</font>`](https://github.com/NVIDIA/k8s-device-plugin)
-2. `<font style="background-color:rgba(255, 255, 255, 0);">`如果想分配GPU使用MIG（`</font><font style="color:rgb(34, 34, 38);">`Multi-Instance GPU`</font><font style="background-color:rgba(255, 255, 255, 0);">`）参考链接：`</font>`[`<font style="background-color:rgba(255, 255, 255, 0);">`NVIDIA.com`</font>`](https://developer.nvidia.com/zh-cn/blog/deploying-nvidia-triton-at-scale-with-mig-and-kubernetes/#:~:text=%E5%9C%A8%20Kubernetes%20%E7%8E%AF%E5%A2%83%E4%B8%AD%EF%BC%8C%E5%BF%85%E9%A1%BB%E5%AE%89%E8%A3%85%20NVIDIA%20%E8%AE%BE%E5%A4%87%E6%8F%92%E4%BB%B6%E5%92%8C%20GPU%20%E5%8A%9F%E8%83%BD%E5%8F%91%E7%8E%B0%E6%8F%92%E4%BB%B6%E6%89%8D%E8%83%BD%E4%BD%BF%E7%94%A8%20MIG,A100%20GPU%20%E6%9C%89%E4%B8%83%E4%B8%AA%20MIG%20%E8%AE%BE%E5%A4%87%EF%BC%8C%E8%80%8C%E5%8F%A6%E4%B8%80%E4%B8%AA%20A100%20MIG%20%E8%A2%AB%E7%A6%81%E7%94%A8%E3%80%82)`<font style="background-color:rgba(255, 255, 255, 0);">`、`</font>`[`<font style="background-color:rgba(255, 255, 255, 0);">`CSDN.com`</font>`](https://blog.csdn.net/qq_27815483/article/details/140813348)
-   1. `<font style="background-color:rgba(255, 255, 255, 0);">`A100 支持最高分配7个`</font>`
+1. [如果您在使用设备插件时不请求 GPU，则插件会在容器内公开机器上的所有 GPU。](https://github.com/NVIDIA/k8s-device-plugin)
+2. 如果想分配GPU使用MIG（Multi-Instance GPU）参考链接：[NVIDIA.com](https://developer.nvidia.com/zh-cn/blog/deploying-nvidia-triton-at-scale-with-mig-and-kubernetes/#:~:text=%E5%9C%A8%20Kubernetes%20%E7%8E%AF%E5%A2%83%E4%B8%AD%EF%BC%8C%E5%BF%85%E9%A1%BB%E5%AE%89%E8%A3%85%20NVIDIA%20%E8%AE%BE%E5%A4%87%E6%8F%92%E4%BB%B6%E5%92%8C%20GPU%20%E5%8A%9F%E8%83%BD%E5%8F%91%E7%8E%B0%E6%8F%92%E4%BB%B6%E6%89%8D%E8%83%BD%E4%BD%BF%E7%94%A8%20MIG,A100%20GPU%20%E6%9C%89%E4%B8%83%E4%B8%AA%20MIG%20%E8%AE%BE%E5%A4%87%EF%BC%8C%E8%80%8C%E5%8F%A6%E4%B8%80%E4%B8%AA%20A100%20MIG%20%E8%A2%AB%E7%A6%81%E7%94%A8%E3%80%82)、[CSDN.com](https://blog.csdn.net/qq_27815483/article/details/140813348)
+   1. A100 支持最高分配7个
 3. 同一Pod里面，可以有多个容器，多个容器可以共享Pod的资源
 
 ## Token

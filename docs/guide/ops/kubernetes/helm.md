@@ -1,0 +1,271 @@
+---
+title: helm
+sort: 3
+---
+
+# helm
+
+```shell
+helm repo add nvdp https://nvidia.github.io/k8s-device-plugin
+helm repo add harbor https://helm.goharbor.io
+helm repo add nvidia https://nvidia.github.io/gpu-operator
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+helm repo add hami-charts https://project-hami.github.io/HAMi/
+helm repo add hami-webui https://project-hami.github.io/HAMi-WebUI
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+```
+
+## harbor
+```shell
+helm repo add harbor https://helm.goharbor.io
+helm repo update
+
+helm install harbor harbor/harbor -f harbor-values.yaml --namespace harbor --create-namespace
+
+```
+
+```yaml
+expose:
+  # 同一台机器部署情况下，可以用nginx代理这个
+  type: clusterIP
+  tls:
+    enabled: false
+    auto:
+      enabled: false
+      commonName: "placeholder"
+
+# 注意这里，必须要和 docker login 用的地址一样
+externalURL: http://172.29.101.173:8888  # 或 http://your-domain.com
+
+harborAdminPassword: "123456"
+
+persistence:
+  enabled: true
+  persistentVolumeClaim:
+    registry:
+      storageClass: "local-path"
+      accessMode: ReadWriteOnce
+      size: 5Gi
+    jobservice:
+      storageClass: "local-path"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    database:
+      storageClass: "local-path"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    redis:
+      storageClass: "local-path"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+    trivy:
+      storageClass: "local-path"
+      accessMode: Read
+```
+
+## Metrics 
+```shell
+helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+helm repo update
+
+helm install metrics-server metrics-server/metrics-server \
+  --namespace kube-system \
+  --create-namespace \
+  --set args="{--kubelet-insecure-tls}"
+
+```
+
+## gpu-operator
+[官方文档](https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/getting-started.html#operator-install-guide)
+
+[参考教程](https://www.lixueduan.com/posts/kubernetes/25-gpu-share-time-slicing/)
+
+### 安装
+1. <font style="background-color:rgba(255, 255, 255, 0);">GPU 节点必须运行相同的操作系统，</font>
++ <font style="background-color:rgba(255, 255, 255, 0);">如果提前手动在节点上安装驱动的话，该节点可以使用不同的操作系统</font>
++ <font style="background-color:rgba(255, 255, 255, 0);">CPU 节点操作系统没要求，因为 gpu-operator 只会在 GPU 节点上运行</font>
+2. <font style="background-color:rgba(255, 255, 255, 0);">GPU 节点必须配置相同容器引擎，例如都是 containerd 或者都是 docker</font>
+3. <font style="background-color:rgba(255, 255, 255, 0);">如果使用了 Pod Security Admission (PSA) ，需要为 gpu-operator 标记特权模式</font>
+
+```shell
+kubectl create ns gpu-operator
+kubectl label --overwrite ns gpu-operator pod-security.kubernetes.io/enforce=privileged
+```
+
+<font style="background-color:rgba(255, 255, 255, 0);">4.集群中不要安装 NFD，如果已经安装了需要再安装 gpu-operator 时禁用 NFD 部署。</font>
+
+```shell
+kubectl get nodes -o json | jq '.items[].metadata.labels | keys | any(startswith("feature.node.kubernetes.io"))'
+```
+
+5. helm部署
+
+```shell
+# 添加 nvidia helm 仓库并更新
+helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
+    && helm repo update
+# 以默认配置安装
+helm install --wait --generate-name \
+    -n gpu-operator --create-namespace \
+    nvidia/gpu-operator
+
+# 如果提前手动安装了 gpu 驱动，operator 中要禁止 gpu 安装
+# 目前测试兼容性没问题的版本gpu-operator-v24.9.2
+helm install --wait --generate-name \
+     -n gpu-operator --create-namespace \
+     nvidia/gpu-operator \
+     --set driver.enabled=false
+
+helm list -A 
+```
+
+```shell
+kubectl -n gpu-operator get all
+NAME                                                           READY   STATUS      RESTARTS      AGE
+gpu-feature-discovery-jdqpb                                    1/1     Running     0             35d
+gpu-operator-67f8b59c9b-k989m                                  1/1     Running     6 (35d ago)   35d
+nfd-node-feature-discovery-gc-5644575d55-957rp                 1/1     Running     6 (35d ago)   35d
+nfd-node-feature-discovery-master-5bd568cf5c-c6t9s             1/1     Running     6 (35d ago)   35d
+nfd-node-feature-discovery-worker-sqb7x                        1/1     Running     6 (35d ago)   35d
+nvidia-container-toolkit-daemonset-rqgtv                       1/1     Running     0             35d
+nvidia-cuda-validator-9kqnf                                    0/1     Completed   0             35d
+nvidia-dcgm-exporter-8mb6v                                     1/1     Running     0             35d
+nvidia-device-plugin-daemonset-7nkjw                           1/1     Running     0             35d
+nvidia-driver-daemonset-5.15.0-105-generic-ubuntu22.04-g5dgx   1/1     Running     5 (35d ago)   35d
+nvidia-operator-validator-6mqlm                                1/1     Running     0             35d
+
+```
+
+6. 验证
+
+```bash
+kubectl -n gpu-operator exec -it nvidia-driver-daemonset-5.15.0-105-generic-ubuntu22.04-g5dgx -- nvidia-smi
+Defaulted container "nvidia-device-plugin" out of: nvidia-device-plugin, config-manager, toolkit-validation (init), config-manager-init (init)
+Wed Jul 17 01:49:35 2024
++-----------------------------------------------------------------------------+
+| NVIDIA-SMI 525.147.05   Driver Version: 525.147.05   CUDA Version: 12.0     |
+|-------------------------------+----------------------+----------------------+
+| GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+|                               |                      |               MIG M. |
+|===============================+======================+======================|
+|   0  NVIDIA A40          Off  | 00000000:00:07.0 Off |                    0 |
+|  0%   46C    P0    88W / 300W |    484MiB / 46068MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+|   1  NVIDIA A40          Off  | 00000000:00:08.0 Off |                    0 |
+|  0%   48C    P0    92W / 300W |  40916MiB / 46068MiB |      0%      Default |
+|                               |                      |                  N/A |
++-------------------------------+----------------------+----------------------+
+
++-----------------------------------------------------------------------------+
+| Processes:                                                                  |
+|  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+|        ID   ID                                                   Usage      |
+|=============================================================================|
++-----------------------------------------------------------------------------+
+```
+
+7. 查看node资源、标签
+
+```yaml
+$ kubectl get node xxx -oyaml
+status:
+  addresses:
+  - address: 172.18.187.224
+    type: InternalIP
+  - address: izj6c5dnq07p1ic04ei9vwz
+    type: Hostname
+  allocatable:
+    cpu: "4"
+    ephemeral-storage: "189889991571"
+    hugepages-1Gi: "0"
+    hugepages-2Mi: "0"
+    memory: 15246720Ki
+    nvidia.com/gpu: "1"  # gpu
+    pods: "110"
+  capacity:
+    cpu: "4"
+    ephemeral-storage: 206043828Ki
+    hugepages-1Gi: "0"
+    hugepages-2Mi: "0"
+    memory: 15349120Ki
+    nvidia.com/gpu: "1"
+    pods: "110"
+```
+
+### 测试
+1. 开启TimeSlicing
+
+```yaml
+# kubectl create -n gpu-operator -f nvidia-time-slicing.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: time-slicing-config-all
+data:
+  any: |-
+    version: v1
+    flags:
+      migStrategy: none
+    sharing:
+      timeSlicing:
+        renameByDefault: false
+        failRequestsGreaterThanOne: false
+        resources:
+          - name: nvidia.com/gpu
+            replicas: 4    
+```
+
+2. 修改集群策略
+
+```bash
+kubectl patch clusterpolicies.nvidia.com/cluster-policy \
+    -n gpu-operator --type merge \
+    -p '{"spec": {"devicePlugin": {"config": {"name": "time-slicing-config-all", "default": "any"}}}}'
+
+# 查看修改重启过程
+kubectl get events -n gpu-operator --sort-by='.lastTimestamp'
+
+```
+
+3. 再次运行`node -oyaml`，查看GPU是不是超分配了
+4. 启动pod
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-slicing-verification
+  labels:
+    app: time-slicing-verification
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: time-slicing-verification
+  template:
+    metadata:
+      labels:
+        app: time-slicing-verification
+    spec:
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+      hostPID: true
+      containers:
+        - name: cuda-sample-vector-add
+          image: "nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda11.7.1-ubuntu20.04"
+          command: ["/bin/bash", "-c", "--"]
+          args:
+            - while true; do /cuda-samples/vectorAdd; done
+          resources:
+           limits:
+             nvidia.com/gpu: 1
+```
+
+
+
