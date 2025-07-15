@@ -6,9 +6,9 @@ export default defineConfig({
   base: "/notebook/",
   title: "挖掘机驾驶技巧",
   description: "这是使用 VitePress 构建的文档站点",
-  head: [["link", { rel: "icon", href: "public/assets/image/favicon.ico" }]],
+  head: [["link", { rel: "icon", href: "/notebook/assets/image/favicon.ico" }]],
   themeConfig: {
-    logo: "public/assets/image/favicon.ico",
+    logo: "/assets/image/favicon.ico",
     outline: [2, 3],
     nav: getNavData({
       dirName: "guide",
