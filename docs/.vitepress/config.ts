@@ -6,16 +6,17 @@ export default defineConfig({
   base: "/notebook/",
   title: "挖掘机驾驶技巧",
   description: "这是使用 VitePress 构建的文档站点",
-  head: [["link", { rel: "icon", href: "/assets/image/favicon.ico" }]],
+  head: [["link", { rel: "icon", href: "public/assets/image/favicon.ico" }]],
   themeConfig: {
-    logo: "/assets/image/favicon.ico",
+    logo: "public/assets/image/favicon.ico",
+    outline: [2, 3],
     nav: getNavData({
       dirName: "guide",
     }),
     sidebar: getSidebarData({
-      dirName: "guide", // 👈 指定你自己的目录名
-      ignoreFileName: "README.md", // 👈 如果你用的是 README
-      ignoreDirNames: ["drafts", "images"], // 👈 忽略这些目录
+      dirName: "guide", 
+      ignoreFileName: "README.md", 
+      ignoreDirNames: ["drafts", "images"], 
     }),
   },
 });
