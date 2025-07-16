@@ -1,23 +1,19 @@
 # 简介
 
-用作学习笔记。使用[docsify](https://docsify.js.org/#/zh-cn/quickstart)构建。
+用作学习笔记。使用[vitepress](https://vitepress.dev/zh/guide/getting-started)构建。
 
 ## 开始
 
 ### 安装依赖
 
-```shell
-npm i docsify-cli -g
-```
-
-### 初始化工程
+node > 18
 
 ```shell
-docsify init ./docs
+npm install 
 ```
 
 ### 启动服务
 
 ```shell
-docsify serve
+npm run docs:dev
 ```

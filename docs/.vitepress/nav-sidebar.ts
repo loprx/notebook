@@ -215,22 +215,33 @@ function getNavDataArr(
       .replace(".md", "")
       .replace(/\\/g, "/");
 
-    const text = fileOrDirName.match(/^[0-9]{2}-.+/)
-      ? fileOrDirName.substring(3)
-      : fileOrDirName;
+    let title = fileOrDirName;
+    let sort = 0;
 
     if (stats.isDirectory()) {
+      // 如果是目录，尝试读取 index.md 的 title 和 sort
+      const indexPath = join(fileOrDirFullPath, "index.md");
+      if (existsSync(indexPath)) {
+        const content = readFileSync(indexPath, "utf-8");
+        const frontmatter = matter(content).data;
+        if (frontmatter.title) title = frontmatter.title;
+        if (frontmatter.sort !== undefined) sort = frontmatter.sort;
+      } else {
+        title = fileOrDirName.match(/^[0-9]{2}-.+/)
+          ? fileOrDirName.substring(3)
+          : fileOrDirName;
+      }
+
       const dirData: any = {
-        text,
+        text: title,
         link: `${link}/`,
+        sort,
       };
 
       if (level !== maxLevel) {
-        const arr = getNavDataArr(
-          fileOrDirFullPath,
-          level + 1,
-          maxLevel
-        ).filter((v) => v.text !== "index.md");
+        const arr = getNavDataArr(fileOrDirFullPath, level + 1, maxLevel).filter(
+          (v) => v.text !== "index.md"
+        );
         if (arr.length > 0) {
           dirData.items = arr;
           delete dirData.link;
@@ -240,14 +251,31 @@ function getNavDataArr(
       dirData.activeMatch = link + "/";
       result.push(dirData);
     } else if (isMarkdownFile(fileOrDirName)) {
-      const fileData: DefaultTheme.NavItem = {
-        text,
+      if (fileOrDirName === "index.md") return; // index.md 不直接作为 nav 添加
+
+      // 获取 md 文件 title 和 sort
+      const content = readFileSync(fileOrDirFullPath, "utf-8");
+      const frontmatter = matter(content).data;
+      if (frontmatter.title) title = frontmatter.title;
+      if (frontmatter.sort !== undefined) sort = frontmatter.sort;
+      else {
+        title = fileOrDirName.match(/^[0-9]{2}-.+/)
+          ? fileOrDirName.substring(3).replace(/\.md$/, "")
+          : fileOrDirName.replace(/\.md$/, "");
+      }
+
+      const fileData: DefaultTheme.NavItem & { sort?: number } = {
+        text: title,
         link,
+        sort,
       };
       fileData.activeMatch = link + "/";
       result.push(fileData);
     }
   });
+
+  // 按 sort 排序
+  result.sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0));
 
   return result;
 }

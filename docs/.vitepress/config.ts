@@ -10,7 +10,12 @@ export default withMermaid(
     description: "这是使用 VitePress 构建的文档站点",
     head: [["link", { rel: "icon", href: "/notebook/assets/image/favicon.ico" }]],
     mermaid: {
-      // 你可以在这里设置 Mermaid 的默认配置
+    },
+    markdown: {
+      image: {
+        // 默认禁用；设置为 true 可为所有图片启用懒加载。
+        lazyLoading: true
+      }
     },
     mermaidPlugin: {
       class: "mermaid my-class", // 设置 mermaid 图表的容器类名
