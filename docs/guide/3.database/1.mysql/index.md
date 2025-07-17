@@ -2,7 +2,6 @@
 title: MySQL 
 order: 1
 ---
-
 # MySQL
 
 ## ✅ 什么是 MySQL？
@@ -53,7 +52,3 @@ INSERT INTO users (name, email) VALUES ('Alice', 'alice@example.com');
 -- 查询数据
 SELECT * FROM users;
 ```
-
----
-
-如果你问的是别的东西（比如 “mMySQL” 是某个特定项目或工具的名字），可以再补充一下上下文。是否是某个软件、框架、模块名？我可以进一步帮你确认。
