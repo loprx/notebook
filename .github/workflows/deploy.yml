@@ -47,6 +47,8 @@ jobs:
         run: npm ci # 或 pnpm install / yarn install / bun install
       - name: Build with VitePress
         run: npm run docs:build # 或 pnpm docs:build / yarn docs:build / bun run docs:build
+      - name: Inject Build Version
+        run: node scripts/write-version.js
       - name: List built files
         run: |
           echo "==== Build Output ===="
