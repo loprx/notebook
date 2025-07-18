@@ -45,6 +45,9 @@ export default withMermaid(
     themeConfig: {
       logo: "/assets/image/favicon.ico",
       outline: [2, 3],
+      socialLinks: [
+        { icon: 'github', link: 'https://github.com/loprx/notebook' },
+      ],
       nav: getNavData({
         dirName: "guide",
       }),
