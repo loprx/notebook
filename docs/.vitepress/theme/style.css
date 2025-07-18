@@ -1,0 +1,36 @@
+.VPNavBar {
+  .title {
+    padding-left: 8px !important;
+  }
+  .content {
+    padding-left: 0px !important;
+  }
+}
+.VPSidebar {
+
+  padding-left: 16px !important; 
+  width: calc(var(--vp-sidebar-width) + 16px) !important; 
+}
+
+.VPDoc.has-aside .content-container {
+  max-width: none !important;
+}
+
+/* 自定义响应式 Sidebar Padding 修复 */
+@media (min-width: 960px) {
+  .VPContent.has-sidebar {
+    padding-left: calc(var(--vp-sidebar-width));
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPContent.has-sidebar {
+    padding-left: var(--vp-sidebar-width) !important;
+  }
+}
+
+@media (max-width: 959px) {
+  .VPContent.has-sidebar {
+    padding-left: 0;
+  }
+}
