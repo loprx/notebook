@@ -1,5 +1,13 @@
 // scripts/write-version.js
-const fs = require('fs');
-const version = new Date().toISOString();
-fs.writeFileSync('docs/.vitepress/dist/__version.json', JSON.stringify({ version }));
-console.log('📦 构建版本：', version);
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const versionFile = path.resolve(__dirname, '../docs/.vitepress/version.json')
+const version = process.env.GITHUB_SHA?.slice(0, 7) ?? 'dev'
+
+fs.writeFileSync(versionFile, JSON.stringify({ version, date: new Date().toISOString() }, null, 2))
+console.log(`Version file written to ${versionFile}`)
