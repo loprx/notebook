@@ -15,7 +15,7 @@ order: 2
 >
 
 ## 集合
-![](\assets\image\1.java\2.collection\1.collection.png)
+![](/assets/image/1.java/2.collection/1.collection.png)
 
 ### List
 #### ArrayList
@@ -26,7 +26,7 @@ order: 2
 
 1. 概览
 
-基于数组实现，所以支持快速访问。**RandomAccess **接口标识该类支持快速随机访问。
+基于数组实现，所以支持快速访问。**RandomAccess**接口标识该类支持快速随机访问。
 
 ```java
 public class ArrayList<E> extends AbstractList<E>
@@ -43,9 +43,9 @@ private static final int DEFAULT_CAPACITY = 10;
 ```
 
 2. 扩容机制
-+ 添加元素的时候首先会通过 **ensureCapacityInternal(size+1) **方法保证容量足够
++ 添加元素的时候首先会通过 **ensureCapacityInternal(size+1)** 方法保证容量足够
 + 如果不够则会通过 **grow **方法进行扩容，新的容量为 **oldCapacity + (oldCapacity >> 1)**，即**oldCapacity + (oldCapacity / 2)**。其中 **oldCapacity >> 1 **需要取整，所以容量大概是1.5倍左右。
-+ **oldCapacity **为偶数就是1.5倍，为奇数就是1.5 倍 - 0.5
++ **oldCapacity** 为偶数就是1.5倍，为奇数就是1.5 倍 - 0.5
 
 ```java
 /**
@@ -124,18 +124,18 @@ public E remove(int index) {
 ```
 
 4. 序列化
-+ **ArrayList **基于数组实现，并且具有动态扩容特性，不一定每一位都有值填充，所以没必要全部序列化。
++ **ArrayList** 基于数组实现，并且具有动态扩容特性，不一定每一位都有值填充，所以没必要全部序列化。
 + **transient：**此关键字标志此属性不被序列化，被此关键字修饰的字段，只会作用于内存，不会序列化到磁盘。
 
 ```java
 transient Object[] elementData;
 ```
 
-+ **ArrayList **实现了 **writerObject()** 和 **readObject() **用于控制只序列化有值填充的部分。
++ **ArrayList** 实现了 **writerObject()** 和 **readObject()** 用于控制只序列化有值填充的部分。
 + 一般的读取流程
-    - 创建 **InputStream **；
+    - 创建 **InputStream**；
     - **ObjectInputStream**，并传入 **InputStream**；
-    - 然后调用 **ObjectInputStream **对象的 **readObject() **方法从 **InputStream **读取对象状态信息；
+    - 然后调用 **ObjectInputStream** 对象的 **readObject()** 方法从 **InputStream** 读取对象状态信息；
 
 ```java
 /**
@@ -164,9 +164,9 @@ private void readObject(java.io.ObjectInputStream s)
 ```
 
 + 一般的写入流程
-    - 创建 **OutputStream **；
-    - **ObjectOutputStream**，并传入 **OutputStream **输出流对象；
-    - 然后调用 **ObjectOutputStream **对象的 **writerObject() **方法将对象信息写入 **OutputStream**；
+    - 创建 **OutputStream**；
+    - **ObjectOutputStream**，并传入 **OutputStream** 输出流对象；
+    - 然后调用 **ObjectOutputStream**对象的 **writerObject()** 方法将对象信息写入 **OutputStream**；
 
 ```java
 /**
