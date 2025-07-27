@@ -54,12 +54,12 @@ interface Function<T, F> {
 
 2. 1.8 很多接口都加了 @FunctionInterface 注解，如：Runnable、Comparator
 
-### <font style="color:rgb(51,51,51);">Predicate</font>
+### Predicate
 ### Function
-### <font style="color:rgb(51,51,51);">Supplier</font>
-### <font style="color:rgb(51,51,51);">Consumer</font>
-### <font style="color:rgb(51,51,51);">Comparator</font>
-### <font style="color:rgb(51,51,51);">Optional</font>
+### Supplier
+### Consumer
+### Comparator
+### Optional
 ### Stream
 #### 普通 Stream
 ```java
@@ -135,7 +135,7 @@ public class Main {
 
 ## 日期API
 ### Clock
-### <font style="color:rgb(51,51,51);">Timezones</font>
+### Timezones
 ### LocalDateTime
 ### LocalDate
 ### Localtime

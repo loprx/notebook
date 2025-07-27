@@ -282,7 +282,7 @@ ArrayList基于动态数组，LinkedList 基于双向链表
 + 扩容机制不一样，默认两倍，也可以通过构造方法控制，而 **ArrayList** 是1.5倍；
 3. 扩容
 + **Vector **的构造函数可以传入 **capacityIncrement** 参数，它的作用是在扩容时使容量 **capacity **增长 **capacityIncrement**。如果这个参数值小于等于0，则每次扩容 **capacity** 的两倍；
-+ 空参构造函数调用了 **Vector(int initialCapacity) **，传入默认值10，并调用 **Vector(int initialCapacity, int capacityIncrement)** 同时设置 **capacityIncement** 为0；
++ 空参构造函数调用了 **Vector(int initialCapacity)**，传入默认值10，并调用 **Vector(int initialCapacity, int capacityIncrement)** 同时设置 **capacityIncement** 为0；
 
 ```java
 /**
@@ -360,6 +360,7 @@ private void grow(int minCapacity) {
 ```
 
 #### CopyOnWriteArrayList
+
 > java.util.concurrent
 >
 > 同步
@@ -462,11 +463,11 @@ private E get(Object[] a, int index) {
 默认扩容因子是 0.75，也就是会浪费四分之一的空间，0.75 它是一个时间于空间平衡的一个值，每次扩容两倍
 
 #### 线程安全
-<font style="color:rgb(51,51,51);">多线程同时写入，同时执行扩容操作，多线程扩容可能死锁、丢数据；可以对</font><font style="color:rgb(51,51,51);">HashMap </font><font style="color:rgb(51,51,51);">加入同步锁 </font>
+多线程同时写入，同时执行扩容操作，多线程扩容可能死锁、丢数据；可以对HashMap 加入同步锁
 
-<font style="color:rgb(51,51,51);">Collections.synchronizedMap(hashMap)</font><font style="color:rgb(51,51,51);">，但是效率很低，因为该锁是互斥锁，同一时刻只能有一个线 </font>
+Collections.synchronizedMap(hashMap)，但是效率很低，因为该锁是互斥锁，同一时刻只能有一个线
 
-<font style="color:rgb(51,51,51);">程执行读写操作，这时候应该使用ConcurrentHashMap。</font>
+程执行读写操作，这时候应该使用ConcurrentHashMap。
 
 #### JDK 1.7
 维护了一个 Entry[] 的数组 table，Entry 存储键值对，且是一个单向链表。及数组中的每一个位置被当成了一个桶（拉链），采用拉链法解决 Hash 冲突，同一个链表中存放的是哈希值和散列桶取模运算结果相同的 Entry。
@@ -614,7 +615,7 @@ int hash = hash(key);
 int i = indexFor(hash, table.length);
 ```
 
-+ 1.  计算 Hash 值
++ 1. 计算 Hash 值
 
 ```java
 final int hash(Object k) {
@@ -887,16 +888,16 @@ public int size() {
 ```
 
 #### JDK 1.8
-> <font style="color:rgb(51,51,51);">采用Node + CAS + Synchronized来保证并发安全进行实现</font>
+> 采用Node + CAS + Synchronized来保证并发安全进行实现
 >
-> <font style="color:rgb(51,51,51);">synchronized只锁定当前链表或红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发</font>
+> synchronized只锁定当前链表或红黑二叉树的首节点，这样只要hash不冲突，就不会产生并发
 >
-> <font style="color:rgb(51,51,51);">扩容：多线程扩容</font>
+> 扩容：多线程扩容
 >
-> <font style="color:rgb(51,51,51);">size()方法的优化：</font>
+> size()方法的优化：
 >
-> + <font style="color:rgb(51,51,51);">CAS 累计</font>
-> + <font style="color:rgb(51,51,51);">数组维护</font>
+> + CAS 累计
+> + 数组维护
 >
 
 
