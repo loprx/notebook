@@ -56,6 +56,9 @@ export default withMermaid(
         ignoreFileName: "README.md",
         ignoreDirNames: ["drafts", "images"],
       }),
+      search: {
+        provider: 'local'
+      }
     },
   })
 );

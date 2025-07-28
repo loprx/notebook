@@ -1,10 +1,12 @@
 .VPNavBar {
-  .title {
+   .title {
     padding-left: 8px !important;
   }
-  .content {
+  /* .vitepress/theme/custom.css */
+
+  /* .content {
     padding-left: 0px !important;
-  }
+  }  */
 }
 .VPSidebar {
 

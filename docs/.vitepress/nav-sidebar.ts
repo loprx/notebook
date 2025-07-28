@@ -199,7 +199,6 @@ export function getNavData(navGenerateConfig: NavGenerateConfig = {}) {
   const dirFullPath = resolve(__dirname, `../${dirName}`);
   return getNavDataArr(dirFullPath, 1, maxLevel);
 }
-
 function getNavDataArr(
   dirFullPath: string,
   level: number,
@@ -216,66 +215,74 @@ function getNavDataArr(
       .replace(/\\/g, "/");
 
     let title = fileOrDirName;
-    let sort = 0;
+    let order = 0;
 
     if (stats.isDirectory()) {
-      // 如果是目录，尝试读取 index.md 的 title 和 sort
       const indexPath = join(fileOrDirFullPath, "index.md");
       if (existsSync(indexPath)) {
         const content = readFileSync(indexPath, "utf-8");
         const frontmatter = matter(content).data;
         if (frontmatter.title) title = frontmatter.title;
-        if (frontmatter.sort !== undefined) sort = frontmatter.sort;
+        if (frontmatter.order !== undefined)
+          order = parseInt(frontmatter.order, 10) || 0;
       } else {
         title = fileOrDirName.match(/^[0-9]{2}-.+/)
           ? fileOrDirName.substring(3)
           : fileOrDirName;
       }
 
-      const dirData: any = {
-        text: title,
-        link: `${link}/`,
-        sort,
-      };
+      // 获取下一级内容（子文件或子目录）
+      const children = level < maxLevel
+        ? getNavDataArr(fileOrDirFullPath, level + 1, maxLevel)
+        : [];
 
-      if (level !== maxLevel) {
-        const arr = getNavDataArr(fileOrDirFullPath, level + 1, maxLevel).filter(
-          (v) => v.text !== "index.md"
-        );
-        if (arr.length > 0) {
-          dirData.items = arr;
-          delete dirData.link;
-        }
+      // 判断是否需要生成下拉
+      const filteredChildren = children.filter(
+        (v) => v.text !== "index.md"
+      );
+
+      if (filteredChildren.length > 0) {
+        // 下拉菜单
+        result.push({
+          text: title,
+          items: filteredChildren,
+          activeMatch: link + "/",
+          order,
+        });
+      } else {
+        // 只有 index.md，一个链接
+        result.push({
+          text: title,
+          link: link + "/",
+          activeMatch: link + "/",
+          order,
+        });
       }
-
-      dirData.activeMatch = link + "/";
-      result.push(dirData);
     } else if (isMarkdownFile(fileOrDirName)) {
-      if (fileOrDirName === "index.md") return; // index.md 不直接作为 nav 添加
+      if (fileOrDirName === "index.md") return;
 
-      // 获取 md 文件 title 和 sort
       const content = readFileSync(fileOrDirFullPath, "utf-8");
       const frontmatter = matter(content).data;
+      console.log('->> ',fileOrDirName, frontmatter)
       if (frontmatter.title) title = frontmatter.title;
-      if (frontmatter.sort !== undefined) sort = frontmatter.sort;
+      if (frontmatter.order !== undefined)
+        order = parseInt(frontmatter.order, 10) || 0;
       else {
         title = fileOrDirName.match(/^[0-9]{2}-.+/)
           ? fileOrDirName.substring(3).replace(/\.md$/, "")
           : fileOrDirName.replace(/\.md$/, "");
       }
 
-      const fileData: DefaultTheme.NavItem & { sort?: number } = {
+      result.push({
         text: title,
         link,
-        sort,
-      };
-      fileData.activeMatch = link + "/";
-      result.push(fileData);
+        activeMatch: link + "/",
+        order,
+      });
     }
   });
 
-  // 按 sort 排序
-  result.sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0));
+  result.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
 
   return result;
 }
