@@ -1,5 +1,5 @@
 .VPNavBar {
-   .title {
+  .title {
     padding-left: 8px !important;
   }
   /* .vitepress/theme/custom.css */
@@ -9,9 +9,8 @@
   }  */
 }
 .VPSidebar {
-
-  padding-left: 16px !important; 
-  width: calc(var(--vp-sidebar-width) + 16px) !important; 
+  padding-left: 16px !important;
+  width: calc(var(--vp-sidebar-width) + 16px) !important;
 }
 
 .VPDoc.has-aside .content-container {
@@ -23,10 +22,24 @@
   .VPContent.has-sidebar {
     padding-left: calc(var(--vp-sidebar-width));
   }
+  .VPNavBar.has-sidebar .title {
+    width: var(--vp-sidebar-width) !important;
+  }
+  .VPNavBar.has-sidebar .content[data-v-cf6e7c5e] {
+    padding-right: 32px !important;
+    padding-left: var(--vp-sidebar-width) !important;
+  }
 }
 
 @media (min-width: 1440px) {
   .VPContent.has-sidebar {
+    padding-left: var(--vp-sidebar-width) !important;
+  }
+  .VPNavBar.has-sidebar .title {
+    width: var(--vp-sidebar-width) !important;
+  }
+  .VPNavBar.has-sidebar .content[data-v-cf6e7c5e] {
+    padding-right: 32px !important;
     padding-left: var(--vp-sidebar-width) !important;
   }
 }
@@ -37,9 +50,8 @@
   }
 }
 
-.main{
-  img{
-    margin: auto
+.main {
+  img {
+    margin: auto;
   }
-
 }
