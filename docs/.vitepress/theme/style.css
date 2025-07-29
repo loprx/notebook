@@ -25,7 +25,7 @@
   .VPNavBar.has-sidebar .title {
     width: var(--vp-sidebar-width) !important;
   }
-  .VPNavBar.has-sidebar .content[data-v-cf6e7c5e] {
+  .VPNavBar.has-sidebar .content {
     padding-right: 32px !important;
     padding-left: var(--vp-sidebar-width) !important;
   }
@@ -38,7 +38,7 @@
   .VPNavBar.has-sidebar .title {
     width: var(--vp-sidebar-width) !important;
   }
-  .VPNavBar.has-sidebar .content[data-v-cf6e7c5e] {
+  .VPNavBar.has-sidebar .content {
     padding-right: 32px !important;
     padding-left: var(--vp-sidebar-width) !important;
   }
