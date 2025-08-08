@@ -40,7 +40,7 @@ export default withMermaid(
       },
     },
     mermaidPlugin: {
-      class: "mermaid my-class", // 设置 mermaid 图表的容器类名
+      class: "i-mermaid", // 设置 mermaid 图表的容器类名
     },
     themeConfig: {
       logo: "/assets/image/favicon.ico",
