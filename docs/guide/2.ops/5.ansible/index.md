@@ -12,6 +12,19 @@ order: 5
 * **IT 基础设施编排**（如搭建 K8s、Hadoop、OpenStack、Ceph）
 * **自动执行任务**（如重启服务、更新系统、批量执行命令）
 
+```mermaid
+graph TD
+    A[控制节点 Control Node] -->|SSH/WinRM| B[受控节点 Managed Nodes]
+    A -->|运行 Playbook| C[Inventory 清单]
+    A -->|调用| D[模块 Modules]
+    A -->|使用| E[插件 Plugins]
+    A -->|加载| F[角色 Roles]
+    D -->|执行任务| B
+    E -->|扩展功能| A
+    F -->|组织任务和变量| A
+    C -->|提供目标主机信息| A
+```
+
 ## 🔧 一句话理解
 
 > **Ansible 是一种“声明式”的自动化工具，告诉服务器“最终应该是什么状态”，它自动帮你完成变更。**
